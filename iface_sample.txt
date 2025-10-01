@@ -1,0 +1,7 @@
+# Formato: alias,ip
+# Líneas que comienzan con # son comentarios y serán ignoradas por tu script.
+eth0,192.168.1.10
+wlan0,192.168.1.89
+docker0,172.17.0.1
+vEthernet (WSL (Hyper-V firewall)),172.29.224.1
+lo,127.0.0.1
