@@ -30,10 +30,25 @@ if (-Not (Test-Path $dir)) {
     New-Item -ItemType Directory -Path $dir | Out-Null
 }
 
-#Ejecutar el contenedor Docker
-docker run -it  `
-    --net=host `
-    --cap-add=NET_ADMIN `
-    -v "${PWD}\iface.txt:/app/iface.txt" `
-    -v "${PWD}\data:/app/data" `
-    sniffer-lite
+#Ejecutar el contenedor Docker. MONITOR_PORT por defecto es 8080.
+if (-not $env:MONITOR_PORT) {
+    $env:MONITOR_PORT = "8080"
+}
+
+Write-Host "📡 Monitoreando el puerto $($env:MONITOR_PORT)"
+
+$dockerArgs = @(
+    "run", "-it",
+    "--net=host",
+    "--cap-add=NET_ADMIN",
+    "--cap-add=NET_RAW",
+    "-e", "MONITOR_PORT=$($env:MONITOR_PORT)",
+    "-v", "${PWD}\iface.txt:/app/iface.txt",
+    "-v", "${PWD}\data:/app/data"
+)
+if ($env:IFACE) {
+    $dockerArgs += @("-e", "IFACE=$($env:IFACE)")
+}
+$dockerArgs += "sniffer-lite"
+
+docker @dockerArgs
