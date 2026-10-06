@@ -1,0 +1,19 @@
+[Unit]
+Description=sniffer-lite — monitoreo del puerto 8080
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/sniffer-lite
+Environment=PYTHONUNBUFFERED=1
+Environment=MONITOR_PORT=8080
+# Descomenta para forzar la interfaz. En Raspberry Pi OS Bookworm el cable
+# suele ser end0; en imágenes anteriores es eth0; el wifi es wlan0.
+# Environment=IFACE=end0
+ExecStart=/usr/bin/python3 /opt/sniffer-lite/app.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
